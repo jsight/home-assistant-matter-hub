@@ -108,9 +108,10 @@ const closureTagForDeviceClass = (deviceClass: string | undefined): number => {
 
 function CoverClosureDevice(
   homeAssistantEntity: HomeAssistantEntityBehavior.State,
-): EndpointType {
+) {
   const attributes = homeAssistantEntity.entity.state
     .attributes as CoverDeviceAttributes & {
+    device_class?: string;
     battery?: number;
     battery_level?: number;
   };
