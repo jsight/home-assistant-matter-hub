@@ -50,8 +50,18 @@ interface DeviceTypeSupport {
 // quality concentration sensors are 0x002c, motion and occupancy are both
 // 0x0107, so collapsing to the id is correct here. Only ids that are
 // unsupported ("no") somewhere need an entry; anything absent never warns.
-// Same sources and date as matterDeviceTypeControllerSupport (2026-09).
+// Same source set as matterDeviceTypeControllerSupport, plus the Closure entry
+// updated for Google Home's 2026-10-29 app release.
 const deviceTypeIdSupport: Record<number, DeviceTypeSupport> = {
+  // Closure (Matter 1.5)
+  560: {
+    apple: "unknown",
+    google: "yes",
+    alexa: "unknown",
+    aqara: "unknown",
+    smartthings: "unknown",
+    note: "Google Home added Matter Closure recognition in its October 29, 2026 update. Support in other controllers has not been verified.",
+  },
   // speaker
   34: {
     apple: "no",

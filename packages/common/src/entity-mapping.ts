@@ -7,6 +7,7 @@ export type MatterDeviceType =
   | "basic_video_player"
   | "battery_storage"
   | "carbon_monoxide_sensor"
+  | "closure"
   | "color_temperature_light"
   | "contact_sensor"
   | "dimmable_light"
@@ -578,6 +579,7 @@ export const matterDeviceTypeLabels: Record<MatterDeviceType, string> = {
   basic_video_player: "Basic Video Player (TV)",
   battery_storage: "Battery Sensor",
   carbon_monoxide_sensor: "Carbon Monoxide (CO) Sensor",
+  closure: "Closure (Matter 1.5)",
   color_temperature_light: "Color Temperature Light",
   contact_sensor: "Contact Sensor",
   dishwasher: "Dishwasher",
@@ -645,10 +647,11 @@ export interface MatterDeviceTypeControllerSupport {
 
 /**
  * Which controllers actually surface each Matter device type, so the override
- * picker can warn before you pick a type your controller ignores. Checked
- * 2026-09: Apple from its chipplugin-protocol-map plist (#410), Google and Alexa
- * from their device pages, Aqara from its Supported Matter Device Type List,
- * SmartThings from the matterGeneric fingerprints of its Edge drivers.
+ * picker can warn before you pick a type your controller ignores. The original
+ * matrix was checked 2026-09: Apple from its chipplugin-protocol-map plist
+ * (#410), Google and Alexa from their device pages, Aqara from its Supported
+ * Matter Device Type List, SmartThings from the matterGeneric fingerprints of
+ * its Edge drivers. Closure's Google entry reflects the 2026-10-29 update.
  */
 export const matterDeviceTypeControllerSupport: Record<
   MatterDeviceType,
@@ -724,6 +727,14 @@ export const matterDeviceTypeControllerSupport: Record<
     alexa: "yes",
     aqara: "yes",
     smartthings: "yes",
+  },
+  closure: {
+    apple: "unknown",
+    google: "yes",
+    alexa: "unknown",
+    aqara: "unknown",
+    smartthings: "unknown",
+    note: "Google Home added Matter Closure recognition in its October 29, 2026 update. Support in other controllers has not been verified.",
   },
   thermostat: {
     apple: "yes",

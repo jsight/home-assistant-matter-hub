@@ -118,4 +118,8 @@ Check that your HA entity reports `current_position` correctly in Developer Tool
 
 ### Garage door limitations
 
-Garage doors are exposed as WindowCovering devices since Matter does not have a dedicated garage door device type. Not all controllers handle this well. Consider using a `switch` entity with Entity Mapping override instead if you only need open/close control.
+Garage doors are exposed as WindowCovering by default for compatibility with existing bridges and pairings. Matter 1.5 added the **Closure** device type, and Entity Mapping can now expose a cover as **Closure (Matter 1.5)** instead.
+
+For an HA cover with `device_class: garage`, HAMH identifies it with the Matter `Closure.GarageDoor` semantic tag. Closure Control reports open, closed, moving, and partially opened states and supports open, close, and stop commands. The Matter Closure type has no generic percentage target, so this override does not provide the WindowCovering position slider or arbitrary partial-position commands.
+
+Changing a paired endpoint from WindowCovering to Closure changes its Matter device type. Restart HAMH and remove/re-add the bridge in each controller so it discovers the new type. Choose Closure only when the controller supports it; Google Home added Closure recognition in its October 29, 2026 update. Other controller support has not been confirmed here.

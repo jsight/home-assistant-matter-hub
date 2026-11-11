@@ -20,6 +20,7 @@ Rows flagged with a footnote number link to the vendor source that establishes t
 | `switch` | DimmablePlugInUnit | ✅ | ❌ [¹](#sources) | ✅ [²](#sources) | ✅ [⁴](#sources) | ✅ [⁶](#sources) |
 | `lock` | DoorLock | ✅ | ✅ [¹](#sources) | ✅ [²](#sources) | ✅ [⁴](#sources) | ✅ |
 | `cover` | WindowCovering | ✅ | ✅ [¹](#sources) | ✅ [²](#sources) | ✅ [⁴](#sources) | ✅ |
+| `cover` (override) | Closure (Matter 1.5) | ❓ | ✅ [⁷](#sources) | ❓ | ❓ | ❓ |
 | `climate` | Thermostat | ✅ | ✅ [¹](#sources) | ✅ [²](#sources) | ✅ [⁴](#sources) | ✅ |
 | `fan` | Fan | ✅ | ✅ [¹](#sources) | ✅ [²](#sources) | ✅ [⁴](#sources) | ⚠️ |
 | `sensor` | TemperatureSensor | ✅ | ✅ [¹](#sources) | ✅ [²](#sources) | ✅ [⁴](#sources) | ✅ |
@@ -115,6 +116,7 @@ Footnote references for the ✅ / ❌ cells above:
 4. Aqara Home, [Aqara Supported Matter Device Type List](https://opendoc.aqara.com/en/docs/Matter/Aqara%20Supported%20Matter%20Device%20Type%20List.html) (updated 2026-06-05). ❌ for Aqara means the type is not on that list, ❓ that HAMH's endpoint carries more than one type and it's unclear which one Aqara picks.
 5. Apple Home (iOS 26), the internal chipplugin-protocol-map.plist from HomeKitMatter.framework, surfaced in [discussion #410](https://github.com/RiDDiX/home-assistant-matter-hub/discussions/410). This is Apple's actual Matter to HomeKit translation table. A device type missing from it gets no HomeKit tile unless Apple handles it natively; the plist's NativeMatterDeviceTypes lists only Robot Vacuum (0x0074) and Network Infrastructure Manager (0x0090). Apple cells marked ❌ with this footnote have no entry in the plist, so they get no tile over Matter; Apple's separate media paths (AirPlay, HomeKit native) are outside this matrix. iOS 27 (beta 3 plist) adds Refrigerator, Laundry Washer, Dishwasher, Cooktop, Oven, Laundry Dryer, Electrical Sensor and Electrical Meter as native types. A tester said in July the appliances weren't finished yet, and it's not confirmed that the released Home app shows them, so those cells are ❓. Fans (0x2B), air quality sensors (0x2C) and air purifiers (0x2D) are in the mapping table, so Apple shows them.
 6. SmartThings, the `matterGeneric` fingerprints of the [matter-* Edge drivers](https://github.com/SmartThingsCommunity/SmartThingsEdgeDrivers/tree/main/drivers/SmartThings) (read 2026-09-23). ❓ means no fingerprint for the type, the driver may still pick it up another way.
+7. [9to5Google, October 29, 2026](https://9to5google.com/2026/10/29/google-home-update-nest-cam-matter-updates-fixes/), reporting that Google Home recognizes Matter Closure types and displays the corresponding icons and controls. Other controllers have not been verified with HAMH's Closure endpoint.
 
 Apple, Google, Alexa, Aqara, and SmartThings each move at a different cadence. A ❌ here means the vendor has not published support on their current device-type page, not that the device is known to fail. When a vendor adds the category we flip the cell and cite the update.
 

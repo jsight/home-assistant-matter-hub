@@ -722,6 +722,13 @@ export function EntityMappingDialog({
               {controllerSupportWarning(matterDeviceType)}
             </Alert>
           )}
+        {currentDomain === "cover" && matterDeviceType === "closure" && (
+          <Alert severity="info" sx={{ mt: 1 }}>
+            Closure is for discrete open/closed control and does not provide a
+            percentage slider. For a garage door, set the Home Assistant device
+            class to “garage” so controllers identify it as a garage door.
+          </Alert>
+        )}
         {currentDomain === "light" &&
           matterDeviceType === "on_off_plugin_unit" && (
             <Alert severity="warning" sx={{ mt: 1 }}>

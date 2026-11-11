@@ -626,7 +626,7 @@ Matter Bridge, Multi-Fabric support, Health Monitoring, Bridge Wizard, AirQualit
 | `switch` | On/Off Plug-in Unit | Power and energy sensors of the same device are mapped automatically. Overrides: Dishwasher, Laundry Washer, Laundry Dryer, EV Charger, Pump, Water Valve, On/Off Switch, Mounted On/Off Control |
 | `input_boolean` | On/Off Plug-in Unit | |
 | `lock` | Door Lock | PIN credentials, unbolt when the lock can open |
-| `cover` | Window Covering | `coverSwapOpenClose`, `coverExposeAsDimmableLight` ([#372](https://github.com/RiDDiX/home-assistant-matter-hub/issues/372)) |
+| `cover` | Window Covering; Matter Closure override for doors | `coverSwapOpenClose`, `coverExposeAsDimmableLight` ([#372](https://github.com/RiDDiX/home-assistant-matter-hub/issues/372)) |
 | `climate` | Room Air Conditioner (with fan modes), otherwise Thermostat | `disableClimateFanControl`, `disableClimateOnOff`, `climateBlockOff` ([#527](https://github.com/RiDDiX/home-assistant-matter-hub/discussions/527)), `climateExposeFan` ([#309](https://github.com/RiDDiX/home-assistant-matter-hub/issues/309)), battery via `batteryEntity` |
 | `fan` | Fan, On/Off Plug-in Unit without speed control | Oscillation, wind modes. Air Purifier override with `filterLifeEntity` |
 | `humidifier` | Fan, the fan speed sets the target humidity | Matter has no humidifier type |

@@ -35,7 +35,7 @@ import { WaterFreezeDetectorType } from "./binary-sensor/water-freeze-detector.j
 import { WaterLeakDetectorType } from "./binary-sensor/water-leak-detector.js";
 import { ButtonDevice } from "./button/index.js";
 import { ClimateDevice } from "./climate/index.js";
-import { CoverDevice } from "./cover/index.js";
+import { ClosureCoverDevice, CoverDevice } from "./cover/index.js";
 import { DoorbellDevice } from "./event/doorbell.js";
 import { EventDevice } from "./event/index.js";
 import { FanDevice } from "./fan/index.js";
@@ -334,6 +334,7 @@ const matterDeviceTypeFactories: Partial<
   mounted_on_off_control: (ha) =>
     MountedOnOffControlType.set({ homeAssistantEntity: ha }),
   door_lock: LockDevice,
+  closure: ClosureCoverDevice,
   window_covering: CoverDevice,
   thermostat: ClimateDevice,
   fan: FanDevice,

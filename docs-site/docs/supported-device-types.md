@@ -11,7 +11,7 @@ All device types Home-Assistant-Matter-Hub supports, with their capabilities, co
 | `light` | Light (OnOff / Dimmable / Color Temperature / Extended Color) |
 | `switch`, `input_boolean` | On/Off Plug-in Unit (switch overrides: Dishwasher, Laundry Washer, Laundry Dryer, EV Charger, Pump, Water Valve) |
 | `lock` | Door Lock |
-| `cover` | Window Covering |
+| `cover` | Window Covering (default); Matter Closure override |
 | `climate` | Room Air Conditioner (with fan modes), otherwise Thermostat |
 | `fan` | Fan, On/Off Plug-in Unit without speed control |
 | `sensor` | Temperature / Humidity / Pressure / Flow / Illuminance / Air Quality / Electrical Meter / Battery |
@@ -129,6 +129,8 @@ See [Lock Guide](./devices/lock.md) for PIN credentials, unlatch setup, and trou
 
 Mapped to **WindowCovering** supporting position and tilt control.
 
+Garage-door covers can opt into the Matter **Closure** type in Entity Mapping. It reports a semantic garage-door tag when the HA `device_class` is `garage`. Closure exposes open, close, stop, and open/closed/moving status; HAMH does not expose a percentage slider on this type. Existing covers remain WindowCovering unless you select the override.
+
 **Supported Features:**
 | HA Feature | Matter Capability |
 |------------|------------------|
@@ -150,7 +152,7 @@ Mapped to **WindowCovering** supporting position and tilt control.
 - `shade`
 - `shutter`
 - `awning`
-- `garage` (limited support)
+- `garage` (WindowCovering by default; Matter Closure is available as an override)
 
 See [Cover Guide](./devices/cover.md) for percentage mapping, feature flags, and troubleshooting.
 

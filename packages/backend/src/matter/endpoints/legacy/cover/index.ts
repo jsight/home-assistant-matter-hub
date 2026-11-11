@@ -4,14 +4,20 @@ import {
 } from "@home-assistant-matter-hub/common";
 import { Logger } from "@matter/general";
 import type { EndpointType } from "@matter/main";
-import type { WindowCovering } from "@matter/main/clusters";
-import { WindowCoveringDevice } from "@matter/main/devices";
+import { DescriptorServer } from "@matter/main/behaviors";
+import { ClosureControl, type WindowCovering } from "@matter/main/clusters";
+import { ClosureDevice, WindowCoveringDevice } from "@matter/main/devices";
+import { Namespace } from "@matter/main/types";
 
 const logger = Logger.get("CoverDevice");
 
 import type { FeatureSelection } from "../../../../utils/feature-selection.js";
 import { testBit } from "../../../../utils/test-bit.js";
 import { BasicInformationServer } from "../../../behaviors/basic-information-server.js";
+import {
+  ClosureControlServer,
+  closureCurrentPosition,
+} from "../../../behaviors/closure-control-server.js";
 import { HomeAssistantEntityBehavior } from "../../../behaviors/home-assistant-entity-behavior.js";
 import { IdentifyServer } from "../../../behaviors/identify-server.js";
 import { DefaultPowerSourceServer } from "../../../behaviors/power-source-server.js";
@@ -22,6 +28,8 @@ import {
 import {
   CoverWindowCoveringServer,
   coverHasTilt,
+  closureCloseAction,
+  closureOpenAction,
 } from "./behaviors/cover-window-covering-server.js";
 
 const CoverDeviceType = (
@@ -81,6 +89,103 @@ const CoverDeviceType = (
   }
   return WindowCoveringDevice.with(...baseBehaviors);
 };
+
+const closureTagForDeviceClass = (deviceClass: string | undefined): number => {
+  switch (deviceClass?.toLowerCase()) {
+    case "garage":
+    case "garage_door":
+      return 5; // Closure.GarageDoor
+    case "gate":
+      return 4; // Closure.Gate
+    case "window":
+      return 1; // Closure.Window
+    case "door":
+      return 6; // Closure.Door
+    default:
+      return 0; // Closure.Covering
+  }
+};
+
+function CoverClosureDevice(
+  homeAssistantEntity: HomeAssistantEntityBehavior.State,
+): EndpointType {
+  const attributes = homeAssistantEntity.entity.state
+    .attributes as CoverDeviceAttributes & {
+    battery?: number;
+    battery_level?: number;
+  };
+  const hasBattery =
+    attributes.battery_level != null ||
+    attributes.battery != null ||
+    !!homeAssistantEntity.mapping?.batteryEntity;
+  const tag = closureTagForDeviceClass(attributes.device_class);
+  const descriptor = DescriptorServer.with("TagList").set({
+    tagList: [{ mfgCode: null, namespaceId: Namespace.Closure, tag }],
+  });
+
+  const closureControl = ClosureControlServer({
+    getMainState: (entity) =>
+      entity.state === "opening" || entity.state === "closing"
+        ? ClosureControl.MainState.Moving
+        : ClosureControl.MainState.Stopped,
+    getCurrentState: (entity) => {
+      const position = closureCurrentPosition(entity);
+      if (position == null) return null;
+      return {
+        position,
+        secureState:
+          position === ClosureControl.CurrentPosition.FullyClosed
+            ? true
+            : position === ClosureControl.CurrentPosition.FullyOpened ||
+                position === ClosureControl.CurrentPosition.PartiallyOpened
+              ? false
+              : null,
+      };
+    },
+    getTargetState: (entity) => {
+      if (entity.state === "opening") {
+        return {
+          position: ClosureControl.TargetPosition.MoveToFullyOpen,
+        };
+      }
+      if (entity.state === "closing") {
+        return {
+          position: ClosureControl.TargetPosition.MoveToFullyClosed,
+        };
+      }
+      return null;
+    },
+    moveTo: (position, agent) =>
+      position === ClosureControl.TargetPosition.MoveToFullyOpen
+        ? closureOpenAction(agent)
+        : closureCloseAction(agent),
+    stop: () => ({ action: "cover.stop_cover" }),
+  });
+
+  const baseBehaviors = [
+    descriptor,
+    BasicInformationServer,
+    IdentifyServer,
+    HomeAssistantEntityBehavior,
+    closureControl,
+  ] as const;
+
+  if (hasBattery) {
+    return ClosureDevice.with(...baseBehaviors, DefaultPowerSourceServer);
+  }
+  return ClosureDevice.with(...baseBehaviors);
+}
+
+export function ClosureCoverDevice(
+  homeAssistantEntity: HomeAssistantEntityBehavior.State,
+): EndpointType | undefined {
+  if (homeAssistantEntity.entity.entity_id.split(".")[0] !== "cover") {
+    return undefined;
+  }
+  return CoverClosureDevice(homeAssistantEntity).set({
+    homeAssistantEntity,
+  });
+}
 
 export function CoverDevice(
   homeAssistantEntity: HomeAssistantEntityBehavior.State,

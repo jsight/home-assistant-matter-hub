@@ -280,6 +280,11 @@ const openLiftAction = (agent: Agent) =>
 const closeLiftAction = (agent: Agent) =>
   liftEndAction(shouldSwapOpenClose(agent) ? "open" : "close", agent);
 
+// Reuse the per-cover swap and open-as-position options when a cover is exposed
+// as a Closure instead of a WindowCovering.
+export const closureOpenAction = openLiftAction;
+export const closureCloseAction = closeLiftAction;
+
 const setTiltPositionAction = (position: number, agent: Agent) => {
   // For binary tilt covers (no tilt position support), translate to open/close tilt
   if (!supportsTiltPositionControl(agent)) {
