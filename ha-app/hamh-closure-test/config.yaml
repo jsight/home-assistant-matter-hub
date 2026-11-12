@@ -1,4 +1,4 @@
-version: "0.0.6-1"
+version: "0.0.7-1"
 image: ghcr.io/jsight/hamh-closure-branch-test
 slug: hamh-closure-test
 name: Home Assistant Matter Hub (Closure Branch Test)
