@@ -8,6 +8,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
 import ErrorIcon from "@mui/icons-material/Error";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import GarageIcon from "@mui/icons-material/Garage";
 import LinkIcon from "@mui/icons-material/Link";
 import WarningAmberIcon from "@mui/icons-material/WarningAmber";
 import Box from "@mui/material/Box";
@@ -22,6 +23,7 @@ import { useTheme } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 import { useCallback, useMemo, useRef, useState } from "react";
+import type { ReactNode } from "react";
 import { useTranslation } from "react-i18next";
 import type { DeviceImageInfo } from "../../api/device-images";
 import {
@@ -86,8 +88,9 @@ interface StateChip {
   color?: "success" | "error" | "warning" | "info" | "default";
 }
 
-const getDeviceIcon = (deviceType: string): string => {
+const getDeviceIcon = (deviceType: string): ReactNode => {
   const type = deviceType.toLowerCase();
+  if (type.includes("closure")) return <GarageIcon fontSize="inherit" />;
   if (type.includes("light")) return "💡";
   if (type.includes("switch") || type.includes("plugin")) return "🔌";
   if (type.includes("lock")) return "🔒";
