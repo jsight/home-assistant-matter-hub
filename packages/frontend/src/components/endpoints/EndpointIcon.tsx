@@ -3,6 +3,7 @@ import AcUnitIcon from "@mui/icons-material/AcUnit";
 import BlindsIcon from "@mui/icons-material/Blinds";
 import CheckBoxIcon from "@mui/icons-material/CheckBox";
 import DeviceHubIcon from "@mui/icons-material/DeviceHub";
+import GarageIcon from "@mui/icons-material/Garage";
 import GroupWorkIcon from "@mui/icons-material/GroupWork";
 import UnknownIcon from "@mui/icons-material/HelpOutline";
 import LightbulbIcon from "@mui/icons-material/Lightbulb";
@@ -49,6 +50,8 @@ export const EndpointIcon = ({ endpoint }: EndpointIconProps) => {
         return <WaterDropIcon />;
       case "WindowCovering":
         return <BlindsIcon />;
+      case "Closure":
+        return <GarageIcon />;
       case "DoorLock":
         return <LockIcon />;
       case "OccupancySensor":
