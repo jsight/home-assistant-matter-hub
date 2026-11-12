@@ -3,11 +3,14 @@ import type {
   HomeAssistantEntityInformation,
   HomeAssistantEntityState,
 } from "@home-assistant-matter-hub/common";
+import { Logger } from "@matter/general";
 import { ClosureControlServer as Base } from "@matter/main/behaviors/closure-control";
 import { ClosureControl } from "@matter/main/clusters";
 import { applyPatchState } from "../../utils/apply-patch-state.js";
 import { HomeAssistantEntityBehavior } from "./home-assistant-entity-behavior.js";
 import type { ValueGetter, ValueSetter } from "./utils/cluster-config.js";
+
+const logger = Logger.get("ClosureControlServer");
 
 export interface ClosureControlServerConfig {
   getMainState: ValueGetter<ClosureControl.MainState>;
@@ -49,22 +52,54 @@ class ClosureControlServerBase extends FeaturedBase {
   override moveTo(request: ClosureControl.MoveToRequest) {
     const position =
       request.position ?? this.state.overallTargetState?.position;
+    const homeAssistant = this.agent.get(HomeAssistantEntityBehavior);
+    const positionName =
+      position == null
+        ? "unset"
+        : (ClosureControl.TargetPosition[position] ?? "unknown");
+
+    logger.info(
+      `[${homeAssistant.entityId}] ClosureControl MoveTo received: request=${JSON.stringify(request)} currentTarget=${JSON.stringify(this.state.overallTargetState)} resolvedPosition=${String(position)} (${positionName})`,
+    );
+
     if (
       position !== ClosureControl.TargetPosition.MoveToFullyClosed &&
       position !== ClosureControl.TargetPosition.MoveToFullyOpen
     ) {
+      logger.warn(
+        `[${homeAssistant.entityId}] Ignoring ClosureControl MoveTo with unsupported or missing position: ${String(position)} (${positionName})`,
+      );
       return;
     }
 
-    const homeAssistant = this.agent.get(HomeAssistantEntityBehavior);
-    homeAssistant.callAction(
-      this.state.config.moveTo(position, this.agent),
+    const action = this.state.config.moveTo(position, this.agent);
+    logger.info(
+      `[${homeAssistant.entityId}] ClosureControl MoveTo mapped to Home Assistant action: ${JSON.stringify(action)}`,
     );
+    try {
+      homeAssistant.callAction(action);
+    } catch (error) {
+      logger.error(
+        `[${homeAssistant.entityId}] ClosureControl MoveTo dispatch failed synchronously: ${error}`,
+      );
+      throw error;
+    }
   }
 
   override stop() {
     const homeAssistant = this.agent.get(HomeAssistantEntityBehavior);
-    homeAssistant.callAction(this.state.config.stop(void 0, this.agent));
+    const action = this.state.config.stop(void 0, this.agent);
+    logger.info(
+      `[${homeAssistant.entityId}] ClosureControl Stop received; mapped to Home Assistant action: ${JSON.stringify(action)}`,
+    );
+    try {
+      homeAssistant.callAction(action);
+    } catch (error) {
+      logger.error(
+        `[${homeAssistant.entityId}] ClosureControl Stop dispatch failed synchronously: ${error}`,
+      );
+      throw error;
+    }
   }
 }
 
