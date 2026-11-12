@@ -2,6 +2,9 @@ import type { BridgeData } from "@home-assistant-matter-hub/common";
 import type { Environment } from "@matter/main";
 import { type Endpoint, ServerNode } from "@matter/main/node";
 import { createBridgeServerConfig } from "../../utils/json/create-bridge-server-config.js";
+import { installMatterInvokeIngressDiagnostics } from "../diagnostics/matter-invoke-ingress.js";
+
+installMatterInvokeIngressDiagnostics();
 
 export class BridgeServerNode extends ServerNode {
   constructor(

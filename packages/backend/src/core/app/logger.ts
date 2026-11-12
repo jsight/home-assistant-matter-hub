@@ -21,6 +21,7 @@ export interface LogContext {
 // matter.js facility names that carry controller traffic.
 export const MATTER_TRAFFIC_FACILITIES = new Set([
   "InteractionServer",
+  "MatterInvokeIngress",
   "MessageExchange",
   "MessageChannel",
   "ServerSubscription",
