@@ -37,12 +37,24 @@ function stringify(value: unknown): string {
 export function installMatterInvokeIngressDiagnostics(): void {
   if (installed) return;
   installed = true;
+  logger.info("Matter interaction ingress diagnostics installed");
 
   const receive = MessageExchange.prototype.onMessageReceived;
   MessageExchange.prototype.onMessageReceived = async function (
     message,
     duplicate,
   ) {
+    if (message.payloadHeader.protocolId === INTERACTION_PROTOCOL_ID) {
+      logger.info(
+        `Incoming Matter interaction before validation via ${this.via}: ${stringify({
+          messageId: message.packetHeader.messageId,
+          messageType: `0x${message.payloadHeader.messageType.toString(16).padStart(2, "0")}`,
+          timedRequest: message.payloadHeader.messageType === 0x0a,
+          duplicate,
+          payloadBytes: message.payload.byteLength,
+        })}`,
+      );
+    }
     if (
       message.payloadHeader.protocolId === INTERACTION_PROTOCOL_ID &&
       message.payloadHeader.messageType === MessageType.InvokeRequest
