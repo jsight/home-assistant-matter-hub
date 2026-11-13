@@ -134,13 +134,8 @@ function CoverClosureDevice(
       if (position == null) return null;
       return {
         position,
-        secureState:
-          position === ClosureControl.CurrentPosition.FullyClosed
-            ? true
-            : position === ClosureControl.CurrentPosition.FullyOpened ||
-                position === ClosureControl.CurrentPosition.PartiallyOpened
-              ? false
-              : null,
+        // The cover state does not establish whether the door is secured.
+        secureState: null,
       };
     },
     getTargetState: (entity) => {
